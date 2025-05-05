@@ -1,6 +1,7 @@
 import '@/styles/globals.css';
 import type { Metadata } from 'next';
 import EnvironmentStatus from '@/components/EnvironmentStatus';
+import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
     title: 'Prompt Engine | Constructiv AI',
@@ -25,6 +26,7 @@ export default function RootLayout({
                             </p>
                         </div>
                     </footer>
+                    <Toaster />
                 </div>
             </body>
         </html>
