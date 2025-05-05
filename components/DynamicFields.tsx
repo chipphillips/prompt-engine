@@ -1,4 +1,10 @@
 import { StyleProfile } from '@/lib/types';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { CheckIcon, CircleCheckIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DynamicFieldsProps {
     placeholders: string[];
@@ -37,106 +43,102 @@ export default function DynamicFields({ placeholders, formValues, onChange, styl
 
         if (field === 'content_style_profile_id') {
             return (
-                <div className="form-control" key={field}>
-                    <div className="flex items-center justify-between mb-1">
-                        <label htmlFor={field} className="form-label">
+                <div className="space-y-2" key={field}>
+                    <div className="flex items-center justify-between">
+                        <Label htmlFor={field} className="text-sm font-medium">
                             {label}
-                        </label>
+                        </Label>
                         {isCompleted && (
                             <span className="text-xs text-green-500 font-medium flex items-center">
-                                <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                </svg>
+                                <CheckIcon className="w-3 h-3 mr-1" />
                                 Completed
                             </span>
                         )}
                     </div>
-                    {description && <p className="text-xs text-gray-500 mb-2">{description}</p>}
-                    <div className={`relative ${isCompleted ? 'has-value' : ''}`}>
-                        <select
+                    {description && <p className="text-xs text-gray-500">{description}</p>}
+
+                    <Select
+                        value={formValues[field] || ""}
+                        onValueChange={(value) => onChange(field, value)}
+                    >
+                        <SelectTrigger
                             id={field}
-                            name={field}
-                            value={formValues[field] || ''}
-                            onChange={(e) => onChange(field, e.target.value)}
-                            className={`form-select pr-8 focus-constructiv ${!formValues[field] ? 'bg-gray-50' : 'bg-white border-gray-300'} ${isCompleted ? 'border-green-200 bg-green-50' : ''} w-full`}
+                            className={cn(
+                                "w-full",
+                                isCompleted ? "border-green-200 bg-green-50" : ""
+                            )}
                         >
-                            <option value="">Select a style profile</option>
+                            <SelectValue placeholder="Select a style profile" />
+                        </SelectTrigger>
+                        <SelectContent>
                             {styleProfiles.map((profile) => (
-                                <option key={profile.id} value={profile.id}>
+                                <SelectItem key={profile.id} value={profile.id}>
                                     {profile.name}
-                                </option>
+                                </SelectItem>
                             ))}
-                        </select>
-                        {isCompleted && (
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                </svg>
-                            </div>
-                        )}
-                    </div>
-                    {!formValues[field] && <p className="form-error text-xs mt-1">Please select a style profile</p>}
+                        </SelectContent>
+                    </Select>
+
+                    {!formValues[field] && <p className="text-xs text-red-500 mt-1">Please select a style profile</p>}
                 </div>
             );
         }
 
         // Default text input
         return (
-            <div className="form-control" key={field}>
-                <div className="flex items-center justify-between mb-1">
-                    <label htmlFor={field} className="form-label">
+            <div className="space-y-2" key={field}>
+                <div className="flex items-center justify-between">
+                    <Label htmlFor={field} className="text-sm font-medium">
                         {label}
-                    </label>
+                    </Label>
                     {isCompleted && (
                         <span className="text-xs text-green-500 font-medium flex items-center">
-                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                            </svg>
+                            <CheckIcon className="w-3 h-3 mr-1" />
                             Completed
                         </span>
                     )}
                 </div>
-                {description && <p className="text-xs text-gray-500 mb-2">{description}</p>}
-                <div className={`relative ${isCompleted ? 'has-value' : ''}`}>
-                    <input
+                {description && <p className="text-xs text-gray-500">{description}</p>}
+                <div className="relative">
+                    <Input
                         type="text"
                         id={field}
-                        name={field}
                         value={formValues[field] || ''}
                         onChange={(e) => onChange(field, e.target.value)}
-                        className={`form-input focus-constructiv ${!formValues[field] ? 'bg-gray-50' : 'bg-white border-gray-300'} ${isCompleted ? 'border-green-200 bg-green-50' : ''} w-full`}
+                        className={cn(
+                            "w-full",
+                            isCompleted ? "border-green-200 bg-green-50 pr-8" : ""
+                        )}
                         placeholder={`Enter ${label.toLowerCase()}`}
                     />
                     {isCompleted && (
                         <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                            </svg>
+                            <CheckIcon className="w-4 h-4 text-green-500" />
                         </div>
                     )}
                 </div>
-                {!formValues[field] && <p className="form-error text-xs mt-1">Please enter {label.toLowerCase()}</p>}
+                {!formValues[field] && <p className="text-xs text-red-500 mt-1">Please enter {label.toLowerCase()}</p>}
             </div>
         );
     };
 
     return (
-        <div className="space-y-5 bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-            <h4 className="text-sm font-semibold text-gray-700 mb-3">Complete all fields below</h4>
-            {placeholders.map(field => renderField(field))}
-            <div className="flex justify-between items-center pt-2 mt-3 border-t border-gray-100">
-                <div className="text-sm text-gray-500">
-                    {Object.keys(formValues).length}/{placeholders.length} fields completed
-                </div>
-                {Object.keys(formValues).length === placeholders.length && (
-                    <div className="text-sm text-green-500 font-medium flex items-center">
-                        <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                        </svg>
-                        All fields complete
+        <Card className="border-gray-200 shadow-sm">
+            <CardContent className="p-5 space-y-5">
+                <h4 className="text-sm font-semibold text-gray-700 mb-3">Complete all fields below</h4>
+                {placeholders.map(field => renderField(field))}
+                <div className="flex justify-between items-center pt-2 mt-3 border-t border-gray-100">
+                    <div className="text-sm text-gray-500">
+                        {Object.keys(formValues).length}/{placeholders.length} fields completed
                     </div>
-                )}
-            </div>
-        </div>
+                    {Object.keys(formValues).length === placeholders.length && (
+                        <div className="text-sm text-green-500 font-medium flex items-center">
+                            <CircleCheckIcon className="w-4 h-4 mr-1" />
+                            All fields complete
+                        </div>
+                    )}
+                </div>
+            </CardContent>
+        </Card>
     );
 } 

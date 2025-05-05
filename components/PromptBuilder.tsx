@@ -11,6 +11,12 @@ import PromptPreview from "./PromptPreview"
 import { usePlaceholders } from "@/lib/usePlaceholders"
 import PromptLogs from "./PromptLogs"
 
+// Import shadcn UI components
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+import { PlusIcon } from "lucide-react"
+
 export default function PromptBuilder() {
   const [templates, setTemplates] = useState<any[]>([])
   const [selectedTemplate, setSelectedTemplate] = useState<string>("")
@@ -131,12 +137,12 @@ export default function PromptBuilder() {
     return (
       <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <div className="container-fluid py-12">
-          <div className="card flex items-center justify-center h-64 shadow-lg border-none">
-            <div className="animate-pulse flex flex-col items-center">
+          <Card className="flex items-center justify-center h-64 border-none">
+            <CardContent className="flex flex-col items-center justify-center h-full">
               <div className="h-12 w-12 border-4 border-t-blue-500 border-r-blue-100 border-b-blue-100 border-l-blue-100 rounded-full animate-spin mb-4"></div>
               <p className="text-gray-500 font-medium">Loading your workspace...</p>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     )
@@ -158,21 +164,17 @@ export default function PromptBuilder() {
               </div>
             </div>
             <div className="hidden sm:flex items-center space-x-3">
-              <button
-                className="btn btn-secondary"
-                type="button"
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
+              <Button variant="default" size="sm">
+                <PlusIcon className="w-4 h-4 mr-2" />
                 New Template
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setShowLogs(!showLogs)}
-                className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2 text-sm font-medium shadow-md"
+                variant={showLogs ? "outline" : "default"}
+                size="sm"
               >
                 {showLogs ? 'Hide Logs' : 'Show Prompt Logs'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -181,127 +183,136 @@ export default function PromptBuilder() {
       {/* Prompt Logs Popover */}
       {showLogs && (
         <div className="fixed top-20 right-4 z-50">
-          <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-80 md:w-96 max-h-[80vh] overflow-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold text-gray-800">Recent Prompts</h3>
-              <button
-                onClick={() => setShowLogs(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-              </button>
-            </div>
-            <PromptLogs embedded={true} />
-          </div>
+          <Card className="p-4 w-80 md:w-96 max-h-[80vh] overflow-auto">
+            <CardHeader className="p-0 pb-4">
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold text-gray-800">Recent Prompts</h3>
+                <Button
+                  onClick={() => setShowLogs(false)}
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <PromptLogs embedded={true} />
+            </CardContent>
+          </Card>
         </div>
       )}
 
       <main className="container-fluid py-6 md:py-8">
-        <div className="card mb-6 shadow-lg border-none">
-          <div className="mb-6">
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">AI Prompt Workspace</h2>
+        <Card className="mb-6 border-none shadow-md">
+          <CardHeader className="pb-0">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">AI Prompt Workspace</h2>
             <p className="text-gray-600">Create AI-optimized prompts for construction industry tasks</p>
-          </div>
-
-          {/* Workflow Steps - Mobile Friendly */}
-          <div className="bg-gray-50 -mx-6 px-4 sm:px-6 py-4 border-y border-gray-100 mb-6 overflow-x-auto">
-            <div className="flex items-center text-sm font-medium text-gray-500 min-w-[500px]">
-              <div className="flex items-center">
-                <span className="flex h-6 w-6 rounded-full bg-blue-500 text-white items-center justify-center text-xs mr-2">1</span>
-                <span className="text-gray-900">Select Template</span>
-              </div>
-              <svg className="w-4 h-4 mx-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-              <div className="flex items-center">
-                <span className={`flex h-6 w-6 rounded-full ${templateObj ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'} items-center justify-center text-xs mr-2`}>2</span>
-                <span className={templateObj ? 'text-gray-900' : 'text-gray-500'}>Fill Variables</span>
-              </div>
-              <svg className="w-4 h-4 mx-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
-              </svg>
-              <div className="flex items-center">
-                <span className={`flex h-6 w-6 rounded-full ${aiResponse ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'} items-center justify-center text-xs mr-2`}>3</span>
-                <span className={aiResponse ? 'text-gray-900' : 'text-gray-500'}>View Result</span>
+          </CardHeader>
+          <CardContent>
+            {/* Workflow Steps - Mobile Friendly */}
+            <div className="bg-gray-50 -mx-6 px-4 sm:px-6 py-4 border-y border-gray-100 mb-6 overflow-x-auto">
+              <div className="flex items-center text-sm font-medium text-gray-500 min-w-[500px]">
+                <div className="flex items-center">
+                  <span className="flex h-6 w-6 rounded-full bg-blue-500 text-white items-center justify-center text-xs mr-2">1</span>
+                  <span className="text-gray-900">Select Template</span>
+                </div>
+                <svg className="w-4 h-4 mx-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <div className="flex items-center">
+                  <span className={`flex h-6 w-6 rounded-full ${templateObj ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'} items-center justify-center text-xs mr-2`}>2</span>
+                  <span className={templateObj ? 'text-gray-900' : 'text-gray-500'}>Fill Variables</span>
+                </div>
+                <svg className="w-4 h-4 mx-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+                <div className="flex items-center">
+                  <span className={`flex h-6 w-6 rounded-full ${aiResponse ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-500'} items-center justify-center text-xs mr-2`}>3</span>
+                  <span className={aiResponse ? 'text-gray-900' : 'text-gray-500'}>View Result</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Template Selection Section */}
-          <div className="grid md:grid-cols-12 gap-6">
-            <div className="md:col-span-4">
-              <TemplateSelect
-                templates={templates}
-                selectedTemplate={selectedTemplate}
-                onChange={handleTemplateChange}
-              />
-            </div>
+            {/* Template Selection Section */}
+            <div className="grid md:grid-cols-12 gap-6">
+              <div className="md:col-span-4">
+                <TemplateSelect
+                  templates={templates}
+                  selectedTemplate={selectedTemplate}
+                  onChange={handleTemplateChange}
+                />
+              </div>
 
-            <div className="md:col-span-8">
-              {templateObj ? (
-                <div>
-                  <DynamicFields
-                    placeholders={placeholders}
-                    formValues={formValues}
-                    onChange={handleInputChange}
-                    styleProfiles={profiles}
-                  />
+              <div className="md:col-span-8">
+                {templateObj ? (
+                  <div>
+                    <DynamicFields
+                      placeholders={placeholders}
+                      formValues={formValues}
+                      onChange={handleInputChange}
+                      styleProfiles={profiles}
+                    />
 
-                  <div className="mt-6">
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="text-lg font-semibold text-gray-900">Prompt Preview</h3>
-                      <div className="text-xs text-gray-500">
-                        Estimated tokens: {Math.ceil(preview.length / 4)}
-                      </div>
-                    </div>
-                    <PromptPreview prompt={preview} />
-                  </div>
-
-                  <div className="mt-6 flex justify-end">
-                    <button
-                      className={`btn ${generating ? 'btn-disabled' : 'btn-primary'}`}
-                      onClick={generateAiResponse}
-                      disabled={generating}
-                    >
-                      {generating ? (
-                        <>
-                          <div className="spinner-sm mr-2"></div>
-                          Generating...
-                        </>
-                      ) : (
-                        <>Generate AI Response</>
-                      )}
-                    </button>
-                  </div>
-
-                  {error && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md text-red-600 text-sm">
-                      {error}
-                    </div>
-                  )}
-
-                  {aiResponse && (
                     <div className="mt-6">
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Response</h3>
-                      <div className="p-4 bg-white border border-gray-200 rounded-md shadow-sm whitespace-pre-wrap">
-                        {aiResponse}
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-semibold text-gray-900">Prompt Preview</h3>
+                        <div className="text-xs text-gray-500">
+                          Estimated tokens: {Math.ceil(preview.length / 4)}
+                        </div>
                       </div>
+                      <PromptPreview prompt={preview} />
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                  <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                  </svg>
-                  <p className="text-gray-500 text-center">Select a template from the left panel to get started</p>
-                </div>
-              )}
+
+                    <div className="mt-6 flex justify-end">
+                      <Button
+                        onClick={generateAiResponse}
+                        disabled={generating}
+                        className={generating ? "opacity-70" : ""}
+                      >
+                        {generating ? (
+                          <>
+                            <div className="h-4 w-4 border-2 border-r-transparent border-white rounded-full animate-spin mr-2"></div>
+                            Generating...
+                          </>
+                        ) : (
+                          <>Generate AI Response</>
+                        )}
+                      </Button>
+                    </div>
+
+                    {error && (
+                      <div className="mt-4 p-3 bg-red-50 border border-red-100 rounded-md text-red-600 text-sm">
+                        {error}
+                      </div>
+                    )}
+
+                    {aiResponse && (
+                      <div className="mt-6">
+                        <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Response</h3>
+                        <Card>
+                          <CardContent className="p-4 whitespace-pre-wrap">
+                            {aiResponse}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                    <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                    </svg>
+                    <p className="text-gray-500 text-center">Select a template from the left panel to get started</p>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

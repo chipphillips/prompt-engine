@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { RefreshCw } from "lucide-react";
+import { cn } from '@/lib/utils';
 
 interface PromptLog {
     id: number;
@@ -61,13 +65,19 @@ export default function PromptLogs({ embedded = false }: PromptLogsProps) {
                     <p className="text-gray-500 text-center py-4">No logs found.</p>
                 ) : (
                     <div>
-                        <button
+                        <Button
                             onClick={loadLogs}
-                            className="text-blue-500 hover:text-blue-700 text-sm mb-3"
+                            variant="link"
+                            className="text-blue-500 hover:text-blue-700 p-0 h-auto text-sm mb-3"
                             disabled={loading}
                         >
-                            {loading ? 'Loading...' : 'Refresh Logs'}
-                        </button>
+                            {loading ? 'Loading...' : (
+                                <>
+                                    <RefreshCw className="h-3 w-3 mr-1" />
+                                    Refresh Logs
+                                </>
+                            )}
+                        </Button>
 
                         <ul className="space-y-4">
                             {logs.map((log) => (
@@ -90,43 +100,49 @@ export default function PromptLogs({ embedded = false }: PromptLogsProps) {
     // Original standalone version with toggle button
     return (
         <div className="fixed top-4 right-4 z-50">
-            <button
+            <Button
                 onClick={() => setVisible(!visible)}
-                className="bg-blue-500 hover:bg-blue-600 text-white rounded-md px-4 py-2 text-sm font-medium shadow-md"
+                variant={visible ? "outline" : "default"}
+                size="sm"
             >
                 {visible ? 'Hide Logs' : 'Show Prompt Logs'}
-            </button>
+            </Button>
 
             {visible && (
-                <div className="mt-2 bg-white rounded-lg shadow-xl border border-gray-200 p-4 w-80 md:w-96 max-h-[80vh] overflow-auto">
-                    <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-lg font-semibold text-gray-800">Recent Prompts</h3>
-                        <button
-                            onClick={loadLogs}
-                            className="text-blue-500 hover:text-blue-700 text-sm"
-                            disabled={loading}
-                        >
-                            {loading ? 'Loading...' : 'Refresh'}
-                        </button>
-                    </div>
-
-                    {logs.length === 0 ? (
-                        <p className="text-gray-500 text-center py-4">No logs found.</p>
-                    ) : (
-                        <ul className="space-y-4">
-                            {logs.map((log) => (
-                                <li key={log.id} className="border-b border-gray-100 pb-3">
-                                    <div className="text-xs text-gray-500">{formatDate(log.created_at)}</div>
-                                    <div className="font-medium mt-1 truncate">{log.prompt_object.template.substring(0, 50)}...</div>
-                                    <div className="flex justify-between mt-1 text-xs">
-                                        <span className="text-gray-600">{log.result_tokens} tokens</span>
-                                        <span className="text-gray-600">${log.cost_usd.toFixed(5)}</span>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                </div>
+                <Card className="mt-2 w-80 md:w-96 max-h-[80vh] overflow-auto">
+                    <CardHeader className="p-4 pb-2">
+                        <div className="flex justify-between items-center">
+                            <h3 className="text-lg font-semibold text-gray-800">Recent Prompts</h3>
+                            <Button
+                                onClick={loadLogs}
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0"
+                                disabled={loading}
+                            >
+                                <RefreshCw className={cn("h-4 w-4", loading && "animate-spin")} />
+                            </Button>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-4 pt-0">
+                        {logs.length === 0 ? (
+                            <p className="text-gray-500 text-center py-4">No logs found.</p>
+                        ) : (
+                            <ul className="space-y-4">
+                                {logs.map((log) => (
+                                    <li key={log.id} className="border-b border-gray-100 pb-3">
+                                        <div className="text-xs text-gray-500">{formatDate(log.created_at)}</div>
+                                        <div className="font-medium mt-1 truncate">{log.prompt_object.template.substring(0, 50)}...</div>
+                                        <div className="flex justify-between mt-1 text-xs">
+                                            <span className="text-gray-600">{log.result_tokens} tokens</span>
+                                            <span className="text-gray-600">${log.cost_usd.toFixed(5)}</span>
+                                        </div>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </CardContent>
+                </Card>
             )}
         </div>
     );

@@ -2,6 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { getEnvironmentStatus } from '../lib/checkEnv';
+import { Card, CardContent, CardHeader, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ChevronUp, ChevronDown, AlertCircle } from "lucide-react";
+import { cn } from '@/lib/utils';
 
 interface EnvDetails {
     usingRealOpenAI: boolean;
@@ -61,40 +65,52 @@ export default function EnvironmentStatus() {
     };
 
     return (
-        <div className="fixed bottom-4 right-4 bg-white rounded-md shadow-lg p-3 text-xs border border-gray-200 z-50 max-w-xs">
-            <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-gray-700">Environment Status</h4>
-                <button
+        <Card className="fixed bottom-4 right-4 shadow-lg z-50 max-w-xs">
+            <CardHeader className="p-3 pb-1 flex flex-row items-center justify-between">
+                <h4 className="font-semibold text-gray-700 text-xs">Environment Status</h4>
+                <Button
                     onClick={() => setExpanded(!expanded)}
-                    className="text-gray-500 hover:text-gray-700"
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
                 >
-                    {expanded ? '▲' : '▼'}
-                </button>
-            </div>
+                    {expanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+            </CardHeader>
 
-            <ul className="space-y-1">
-                <li className="flex items-center">
-                    <span className={`w-3 h-3 rounded-full mr-2 ${status.usingRealOpenAI ? 'bg-green-500' : 'bg-amber-500'}`}></span>
-                    <span>OpenAI: {status.usingRealOpenAI ? 'Live API' : 'Mock Data'}</span>
-                </li>
-                <li className="flex items-center">
-                    <span className={`w-3 h-3 rounded-full mr-2 ${status.usingRealSupabase ? 'bg-green-500' : 'bg-amber-500'}`}></span>
-                    <span>Supabase: {status.usingRealSupabase ? 'Live API' : 'Mock Data'}</span>
-                </li>
-            </ul>
+            <CardContent className="p-3 pt-1 text-xs">
+                <ul className="space-y-1">
+                    <li className="flex items-center">
+                        <span className={cn(
+                            "w-3 h-3 rounded-full mr-2",
+                            status.usingRealOpenAI ? 'bg-green-500' : 'bg-amber-500'
+                        )}></span>
+                        <span>OpenAI: {status.usingRealOpenAI ? 'Live API' : 'Mock Data'}</span>
+                    </li>
+                    <li className="flex items-center">
+                        <span className={cn(
+                            "w-3 h-3 rounded-full mr-2",
+                            status.usingRealSupabase ? 'bg-green-500' : 'bg-amber-500'
+                        )}></span>
+                        <span>Supabase: {status.usingRealSupabase ? 'Live API' : 'Mock Data'}</span>
+                    </li>
+                </ul>
+            </CardContent>
 
             {expanded && (
-                <div className="mt-3 border-t border-gray-100 pt-2">
-                    <button
+                <CardFooter className="p-3 pt-0 border-t border-gray-100 flex flex-col gap-2 text-xs">
+                    <Button
                         onClick={fetchDebugInfo}
                         disabled={loading}
-                        className="w-full text-center px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded text-xs transition-colors"
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-xs h-7"
                     >
                         {loading ? 'Loading...' : 'Debug Server Environment'}
-                    </button>
+                    </Button>
 
                     {status.debugInfo && (
-                        <div className="mt-2 bg-gray-50 p-2 rounded overflow-auto max-h-40 text-xs">
+                        <div className="mt-1 bg-muted p-2 rounded overflow-auto max-h-40 text-xs w-full">
                             <p className="font-semibold">API Key Status:</p>
                             <p>Set: {status.debugInfo.environment.OPENAI_API_KEY.isSet ? 'Yes' : 'No'}</p>
                             <p>Value: {status.debugInfo.environment.OPENAI_API_KEY.sanitizedValue}</p>
@@ -105,8 +121,8 @@ export default function EnvironmentStatus() {
                             <p className="text-gray-400 mt-1">Updated: {new Date(status.debugInfo.time).toLocaleTimeString()}</p>
                         </div>
                     )}
-                </div>
+                </CardFooter>
             )}
-        </div>
+        </Card>
     );
 } 
