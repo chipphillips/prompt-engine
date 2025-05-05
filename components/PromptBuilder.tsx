@@ -164,10 +164,6 @@ export default function PromptBuilder() {
               </div>
             </div>
             <div className="hidden sm:flex items-center space-x-3">
-              <Button variant="default" size="sm">
-                <PlusIcon className="w-4 h-4 mr-2" />
-                New Template
-              </Button>
               <Button
                 onClick={() => setShowLogs(!showLogs)}
                 variant={showLogs ? "outline" : "default"}
