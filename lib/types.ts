@@ -1,12 +1,14 @@
 export interface PromptVariables {
-  content_type: string;
-  target_audience: string;
-  stated_purpose: string;
-  content_style_profile: Record<string, unknown>;
-  intended_outcome: string;
+  [key: string]: string | number | boolean | Record<string, any>;
 }
 
 export interface PromptObject {
   template: string;
   variables: PromptVariables;
+}
+
+export interface StyleProfile {
+  id: string;
+  name: string;
+  json_payload: Record<string, unknown>;
 }
