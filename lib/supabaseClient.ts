@@ -72,9 +72,10 @@ const mockSupabaseClient = {
 };
 
 // Determine whether to use real or mock client
-const useRealSupabase =
+const useRealSupabase = Boolean(
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
 // Export either the real client or the mock client
 export const supabase = useRealSupabase
