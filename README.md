@@ -19,6 +19,7 @@
 ```bash
 pnpm i          # or npm install
 pnpm dev        # next dev
+pnpm test       # run unit tests
 ```
 
 Set the following env vars (e.g. in `.env.local`):

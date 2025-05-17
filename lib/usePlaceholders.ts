@@ -12,23 +12,7 @@ export function usePlaceholders(template: string): string[] {
     const [placeholders, setPlaceholders] = useState<string[]>([])
 
     useEffect(() => {
-        if (!template) {
-            setPlaceholders([])
-            return
-        }
-
-        // Regular expression to match Handlebars placeholders
-        // This will match {{variable}} but ignore {{#if}}, {{else}}, etc.
-        const regex = /{{([^#\/][^}]+?)}}/g
-        const matches = template.match(regex) || []
-
-        // Extract variable names and clean them
-        const extractedPlaceholders = matches
-            .map(match => match.replace(/{{|}}/g, '').trim())
-            .filter(placeholder => !placeholder.includes(' ')) // Filter out helpers with arguments
-            .filter((value, index, self) => self.indexOf(value) === index) // Remove duplicates
-
-        setPlaceholders(extractedPlaceholders)
+        setPlaceholders(extractPlaceholders(template))
     }, [template])
 
     return placeholders
@@ -42,9 +26,11 @@ export function usePlaceholders(template: string): string[] {
 export function extractPlaceholders(template: string): string[] {
     if (!template) return []
 
-    const placeholderRegex = /\{\{([^}]+)\}\}/g
+    const placeholderRegex = /\{\{([^#\/][^}]*)\}\}/g
     const matches = [...template.matchAll(placeholderRegex)]
-    const extractedFields = matches.map((match) => match[1].trim())
+    const extractedFields = matches
+        .map((match) => match[1].trim())
+        .filter((name) => name !== 'else' && !name.includes(' '))
 
     // Remove duplicates
     return [...new Set(extractedFields)]
