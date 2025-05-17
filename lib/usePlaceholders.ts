@@ -17,9 +17,9 @@ export function usePlaceholders(template: string): string[] {
             return
         }
 
-        // Regular expression to match Handlebars placeholders
-        // This will match {{variable}} but ignore {{#if}}, {{else}}, etc.
-        const regex = /{{([^#\/][^}]+?)}}/g
+        // Regular expression to match variable placeholders only
+        // Matches {{variable}} but skips helpers like {{#if}}, {{/if}}, and {{else}}
+        const regex = /{{(?![#\/]|else\b)([^}]+?)}}/g
         const matches = template.match(regex) || []
 
         // Extract variable names and clean them
@@ -42,7 +42,8 @@ export function usePlaceholders(template: string): string[] {
 export function extractPlaceholders(template: string): string[] {
     if (!template) return []
 
-    const placeholderRegex = /\{\{([^}]+)\}\}/g
+    // Match variable placeholders only, skipping helpers
+    const placeholderRegex = /\{\{(?![#\/]|else\b)([^}]+?)\}\}/g
     const matches = [...template.matchAll(placeholderRegex)]
     const extractedFields = matches.map((match) => match[1].trim())
 
