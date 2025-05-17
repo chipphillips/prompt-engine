@@ -2,7 +2,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { renderTemplate } from '@/lib/renderTemplate';
 
 interface PromptPreviewProps {
     prompt: string;
