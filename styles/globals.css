@@ -1,0 +1,210 @@
+/* globals.css - Updated timestamp: 2023-06-10-002 */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary: #0070f3;
+    --primary-dark: #0058c9;
+    --secondary: #f5f5f5;
+    --accent: #e1f1fd;
+    --text-primary: #2e2e2e;
+    --text-secondary: #5f5f5f;
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+    --radius: 0.5rem;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: #f9fafb;
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+@layer base {
+    * {
+        @apply border-gray-200;
+    }
+
+    body {
+        @apply bg-gray-50 text-gray-900;
+    }
+
+    /* Base styles for form elements */
+    select,
+    input,
+    textarea,
+    button {
+        font-family: var(--font-sans);
+    }
+}
+
+@layer components {
+    .container-fluid {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .card {
+        @apply bg-white rounded-lg shadow-md p-6 border border-gray-100;
+    }
+
+    .btn {
+        @apply inline-flex items-center justify-center px-4 py-2 rounded-md font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors;
+    }
+
+    .btn-primary {
+        @apply bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500;
+    }
+
+    .btn-secondary {
+        @apply bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-gray-300;
+    }
+
+    .btn-success {
+        @apply bg-green-500 text-white hover:bg-green-600 focus:ring-green-500;
+    }
+
+    .btn-error {
+        @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500;
+    }
+
+    .btn-disabled {
+        @apply opacity-50 cursor-not-allowed;
+    }
+
+    .form-control {
+        @apply mb-4;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700 mb-1;
+    }
+
+    .form-input {
+        @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-colors;
+    }
+
+    .form-select {
+        @apply block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:ring-opacity-20 focus:border-blue-500 focus:outline-none transition-colors bg-white;
+    }
+
+    .form-error {
+        @apply mt-1 text-sm text-red-500;
+    }
+
+    .section-title {
+        @apply text-xl font-semibold text-gray-800 mb-4;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .placeholder-highlight {
+        @apply bg-blue-50 text-blue-500 px-1 rounded;
+    }
+
+    .placeholder-empty {
+        @apply bg-gray-50 text-gray-500 px-1 rounded border border-dashed border-blue-500;
+    }
+
+    .focus-constructiv {
+        @apply focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 focus:outline-none;
+    }
+
+    .input-error {
+        @apply border-red-500 focus:ring-red-500;
+    }
+
+    .input-valid {
+        @apply border-gray-300 focus:ring-blue-500;
+    }
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #f3f4f6;
+    /* bg-gray-100 */
+    border-radius: 9999px;
+    /* rounded-full */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #d1d5db;
+    /* bg-gray-300 */
+    border-radius: 9999px;
+    /* rounded-full */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #9ca3af;
+    /* bg-gray-400 */
+}
+
+/* Animations */
+@keyframes pulse-blue {
+
+    0%,
+    100% {
+        background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    50% {
+        background-color: rgba(59, 130, 246, 0.2);
+    }
+}
+
+.animate-pulse-blue {
+    animation: pulse-blue 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Card hover effects */
+.card-hover {
+    @apply transition-all duration-300;
+}
+
+.card-hover:hover {
+    @apply shadow-lg transform -translate-y-1;
+}
+
+/* Additional utilities */
+.bg-gradient-blue {
+    @apply bg-gradient-to-br from-blue-500 to-indigo-600;
+}
+
+.text-gradient-blue {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-indigo-600;
+}
+
+.border-focus {
+    @apply transition-colors duration-200 border-gray-300 focus-within:border-blue-500 hover:border-gray-400;
+}
+
+/* Responsive typography */
+.responsive-heading {
+    @apply text-2xl md:text-3xl lg:text-4xl font-bold;
+}
+
+.responsive-subheading {
+    @apply text-lg md:text-xl lg:text-2xl font-semibold;
+}
+
+/* Fix SVG display issues */
+svg {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Append your @layer utilities below */
