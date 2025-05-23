@@ -23,6 +23,7 @@ export default function TemplateLibrary() {
     const [view, setView] = useState<'grid' | 'list'>('grid');
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [templateToEdit, setTemplateToEdit] = useState<Template | null>(null);
 
     useEffect(() => {
         async function fetchTemplates() {
@@ -93,11 +94,10 @@ export default function TemplateLibrary() {
     };
 
     const handleEditTemplate = (id: string) => {
-        // Open edit modal (to be implemented)
         const template = templates.find(t => t.id === id);
         if (template) {
+            setTemplateToEdit(template);
             setIsCreateModalOpen(true);
-            // Add edit functionality
         }
     };
 
@@ -106,9 +106,14 @@ export default function TemplateLibrary() {
         return new Date(dateString).toLocaleDateString();
     };
 
-    const onCreateSuccess = (newTemplate: Template) => {
-        setTemplates([...templates, newTemplate]);
+    const onCreateSuccess = (savedTemplate: Template) => {
+        if (templateToEdit) {
+            setTemplates(prev => prev.map(t => (t.id === savedTemplate.id ? savedTemplate : t)));
+        } else {
+            setTemplates([...templates, savedTemplate]);
+        }
         setIsCreateModalOpen(false);
+        setTemplateToEdit(null);
     };
 
     return (
@@ -342,9 +347,13 @@ export default function TemplateLibrary() {
 
             <CreateTemplateModal
                 open={isCreateModalOpen}
-                onOpenChange={setIsCreateModalOpen}
+                onOpenChange={(open) => {
+                    setIsCreateModalOpen(open);
+                    if (!open) setTemplateToEdit(null);
+                }}
                 onCreateSuccess={onCreateSuccess}
+                templateToEdit={templateToEdit || undefined}
             />
         </div>
     );
-} 
+}
