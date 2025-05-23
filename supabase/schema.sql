@@ -19,6 +19,24 @@ CREATE TABLE IF NOT EXISTS prompt_templates (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Template Versions Table
+CREATE TABLE IF NOT EXISTS template_versions (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  template_id UUID NOT NULL REFERENCES prompt_templates(id) ON DELETE CASCADE,
+  version INT NOT NULL,
+  template TEXT NOT NULL,
+  variables JSONB NOT NULL DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  created_by UUID,
+  UNIQUE (template_id, version)
+);
+
+-- Indexes for template versions
+CREATE INDEX IF NOT EXISTS idx_template_versions_template_id
+  ON template_versions(template_id);
+CREATE INDEX IF NOT EXISTS idx_template_versions_template_version
+  ON template_versions(template_id, version DESC);
+
 -- Sample style profiles
 INSERT INTO style_profiles (name, json_payload) VALUES 
 ('Professional', '{"tone": "professional", "formality": "high"}'),
