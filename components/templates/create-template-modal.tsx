@@ -44,6 +44,8 @@ export default function CreateTemplateModal({
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('scratch');
     const [existingText, setExistingText] = useState('');
+    const [availableTemplates, setAvailableTemplates] = useState<Template[]>([]);
+    const [isCloneLoading, setIsCloneLoading] = useState(false);
 
     // Reset form when modal opens/closes
     useEffect(() => {
@@ -67,6 +69,25 @@ export default function CreateTemplateModal({
             }
         }
     }, [open, templateToEdit]);
+
+    // Load templates when the clone tab is opened
+    useEffect(() => {
+        if (open && activeTab === 'clone' && availableTemplates.length === 0) {
+            const fetchTemplates = async () => {
+                setIsCloneLoading(true);
+                try {
+                    const res = await fetch('/api/templates');
+                    const data = await res.json();
+                    setAvailableTemplates(data);
+                } catch (error) {
+                    console.error('Error fetching templates for clone:', error);
+                } finally {
+                    setIsCloneLoading(false);
+                }
+            };
+            fetchTemplates();
+        }
+    }, [open, activeTab, availableTemplates.length]);
 
     const handleSubmit = async () => {
         if (!name || !template) {
@@ -274,16 +295,31 @@ export default function CreateTemplateModal({
                     <TabsContent value="clone" className="space-y-4">
                         <div className="space-y-2">
                             <Label>Select a template to clone</Label>
-                            <div className="border rounded-md p-4 h-60 overflow-y-auto">
-                                <div className="space-y-2">
-                                    {/* This would be populated with existing templates */}
+                            <div className="border rounded-md p-4 h-60 overflow-y-auto space-y-2">
+                                {isCloneLoading ? (
                                     <div className="text-center text-muted-foreground py-8">
                                         <p>Loading templates...</p>
-                                        <p className="text-xs mt-1">
-                                            This feature will be implemented in a future update.
-                                        </p>
                                     </div>
-                                </div>
+                                ) : (
+                                    availableTemplates.map((t) => (
+                                        <div
+                                            key={t.id}
+                                            className="border rounded-md p-2 flex justify-between items-start"
+                                        >
+                                            <div>
+                                                <p className="font-medium">{t.name}</p>
+                                                {t.description && (
+                                                    <p className="text-xs text-muted-foreground line-clamp-2">
+                                                        {t.description}
+                                                    </p>
+                                                )}
+                                            </div>
+                                            <Button size="sm" onClick={() => handleCloneTemplate(t.id)}>
+                                                Use
+                                            </Button>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </TabsContent>
